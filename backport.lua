@@ -33,3 +33,7 @@ end
 function GetNumGroupMembers()
 	return GetNumRaidMembers()
 end
+
+function Ambiguate(name, other) 
+	return name
+end
