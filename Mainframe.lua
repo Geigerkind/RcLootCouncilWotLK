@@ -36,7 +36,7 @@ RCLootCouncil_RankFrame = {}
 local debug = false -- enable printing of debugging messages
 local nnp = false
 local superDebug = false -- extra debugging (very spammy)
-local version = 42
+local version = "42"
 
 local isMasterLooter = false; -- is the player master looter?
 local isCouncil = false; -- is the player in the council?
