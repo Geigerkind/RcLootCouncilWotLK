@@ -29,3 +29,7 @@ function IsInRaid()
 	local is_in_instance, type = IsInInstance()
 	return is_in_instance and type == "raid"
 end
+
+function GetNumGroupMembers()
+	return GetNumRaidMembers()
+end

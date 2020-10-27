@@ -340,53 +340,48 @@ function RCLootCouncil.EventHandler(self2, event, ...)
 		if isMasterLooter and isRunning and (IsInRaid() or nnp) then -- if we're masterlooter and addon is enabled or debug is on
 			self:debugS("event = "..event)
 			if GetNumLootItems() >= 1 then -- if there's something to loot
-				if not InCombatLockdown() then
-					bossName = GetUnitName("target") -- extract the boss name before the player can switch targets
-					if not bossName then bossName = "Unknown/Chest" end -- check if we really got a boss name, or we just looted a chest
-					for i = 1, GetNumLootItems() do -- run through the number of items in the loot window
-						if db.altClickLooting then -- hook loot buttons if we use altClickLooting
-							local lootButton = getglobal("LootButton"..i)
-							if lootButton ~= nil then 
-								self:HookScript(lootButton, "OnClick", "LootOnClick") -- hook if we use it
+				bossName = GetUnitName("target") -- extract the boss name before the player can switch targets
+				if not bossName then bossName = "Unknown/Chest" end -- check if we really got a boss name, or we just looted a chest
+				for i = 1, GetNumLootItems() do -- run through the number of items in the loot window
+					if db.altClickLooting then -- hook loot buttons if we use altClickLooting
+						local lootButton = getglobal("LootButton"..i)
+						if lootButton ~= nil then 
+							self:HookScript(lootButton, "OnClick", "LootOnClick") -- hook if we use it
+						end
+						if XLoot then -- hook XLoot
+							lootButton = getglobal("XLootButton"..i)
+							if lootButton ~= nil then
+								self:HookScript(lootButton, "OnClick", "LootOnClick")
 							end
-							if XLoot then -- hook XLoot
-								lootButton = getglobal("XLootButton"..i)
-								if lootButton ~= nil then
-									self:HookScript(lootButton, "OnClick", "LootOnClick")
-								end
-							end if XLootFrame then -- if XLoot 1.0
-								lootButton = getglobal("XLootFrameButton"..i)
-								if lootButton ~= nil then
-									self:HookScript(lootButton, "OnClick", "LootOnClick")
-								end
-							end if getglobal("ElvLootSlot"..i) then -- if ElvUI
-								lootButton = getglobal("ElvLootSlot"..i)
-								if lootButton ~= nil then
-									self:HookScript(lootButton, "OnClick", "LootOnClick")
-								end
+						end if XLootFrame then -- if XLoot 1.0
+							lootButton = getglobal("XLootFrameButton"..i)
+							if lootButton ~= nil then
+								self:HookScript(lootButton, "OnClick", "LootOnClick")
+							end
+						end if getglobal("ElvLootSlot"..i) then -- if ElvUI
+							lootButton = getglobal("ElvLootSlot"..i)
+							if lootButton ~= nil then
+								self:HookScript(lootButton, "OnClick", "LootOnClick")
 							end
 						end
-						local _, _, lootQuantity, lootRarity = GetLootSlotInfo(i)
-						-- check if we should autoAward it, otherwise check if we should loot it
-						if db.autoAward and LootSlotHasItem(i) and lootQuantity > 0 and (lootRarity >= db.autoAwardQualityLower and lootRarity <= db.autoAwardQualityUpper) then
-							RCLootCouncil:AutoAward(i, db.autoAwardTo, GetLootSlotLink(i))
-
-						elseif db.autoLooting then
-							if (LootSlotHasItem(i) or db.lootEverything) and lootQuantity > 0 and lootRarity >= GetLootThreshold() then -- Check wether we want to loot the item or not
-								-- now that we know it's an lootable item, lets also check if we should loot BoE's
-								if RCLootCouncil:LootBoE(GetLootSlotLink(i)) then
-									tinsert(lootTable, GetLootSlotLink(i)) -- add the item link to the table
-									tinsert(itemsToLootIndex, i) -- add its index to the lootTable
-								end
-							elseif lootQuantity == 0 then -- if its coin
-								LootSlot(i) -- loot the coin
-							end
-						end
-						
 					end
-				else -- don't do anything if we're in combat
-					self:Print("Couldn't start the loot session because you're in combat.")
-					return;
+					local _, _, lootQuantity, lootRarity = GetLootSlotInfo(i)
+					-- check if we should autoAward it, otherwise check if we should loot it
+					if db.autoAward and LootSlotIsItem(i) and lootQuantity > 0 and (lootRarity >= db.autoAwardQualityLower and lootRarity <= db.autoAwardQualityUpper) then
+						RCLootCouncil:AutoAward(i, db.autoAwardTo, GetLootSlotLink(i))
+
+					elseif db.autoLooting then
+						if (LootSlotIsItem(i) or db.lootEverything) and lootQuantity > 0 and lootRarity >= GetLootThreshold() then -- Check wether we want to loot the item or not
+							-- now that we know it's an lootable item, lets also check if we should loot BoE's
+							if RCLootCouncil:LootBoE(GetLootSlotLink(i)) then
+								tinsert(lootTable, GetLootSlotLink(i)) -- add the item link to the table
+								tinsert(itemsToLootIndex, i) -- add its index to the lootTable
+							end
+						elseif lootQuantity == 0 then -- if its coin
+							LootSlot(i) -- loot the coin
+						end
+					end
+					
 				end
 				if #itemsToLootIndex > 0 then -- if there's anything in the table
 					lootNum = 1;
@@ -2183,9 +2178,7 @@ end
 -----------------------------------------
 function RCLootCouncil:LootOnClick(button)
 	   self:debugS("LootOnClick(button)")
-	if InCombatLockdown() and IsAltKeyDown() then 
-		self:Print("Cannot initiate loot while in combat")
-	elseif db.altClickLooting and IsAltKeyDown() and not IsShiftKeyDown() and not IsControlKeyDown() then
+	if db.altClickLooting and IsAltKeyDown() and not IsShiftKeyDown() and not IsControlKeyDown() then
 		self:debug("LootOnClick called")
 		-- check that we don't add an item we're already looting
 		for k,v in pairs(itemsToLootIndex) do
