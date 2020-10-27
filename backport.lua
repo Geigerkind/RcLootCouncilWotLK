@@ -24,3 +24,8 @@ function GetAverageItemLevel()
 
 	return nil, floor(total / items)
 end
+
+function IsInRaid()
+	local is_in_instance, type = IsInInstance()
+	return is_in_instance and type == "raid"
+end
