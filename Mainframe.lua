@@ -793,7 +793,7 @@ function RCLootCouncil:ChatCommand(msg)
 	input = input:lower(); -- Lower case command
 
     if not input or input:trim() == "" or input == 'help' then
-		print("RCLootCouncil ver. " .. version)
+		--self:print("RCLootCouncil ver. " .. version)
 		self:Print("- config - Open the options frame")
 		self:debug("- debug or d - Toggle debugging")
 		self:Print("- show - Shows the main loot frame")
