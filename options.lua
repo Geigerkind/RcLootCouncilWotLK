@@ -212,7 +212,7 @@ function addon:OptionsTable()
 									local t = {}
 									for i = 0, 5 do
 										local r,g,b,hex = GetItemQualityColor(i)
-										t[i] = "|c"..hex.." "..getglobal("ITEM_QUALITY"..i.."_DESC") 
+										t[i] = hex.." "..getglobal("ITEM_QUALITY"..i.."_DESC") 
 									end
 									return t;
 								end,
@@ -231,7 +231,7 @@ function addon:OptionsTable()
 									local t = {}
 									for i = 0, 5 do
 										local r,g,b,hex = GetItemQualityColor(i)
-										t[i] = "|c"..hex.." "..getglobal("ITEM_QUALITY"..i.."_DESC") 
+										t[i] = hex.." "..getglobal("ITEM_QUALITY"..i.."_DESC") 
 									end
 									return t;
 								end,
@@ -263,10 +263,10 @@ function addon:OptionsTable()
 									if IsInRaid() then
 										for i = 1, GetNumGroupMembers() do
 											local name = GetRaidRosterInfo(i)
-											t[i] = name
+											t[name] = name
 										end
 									else
-										t[1] = UnitName("player");
+										t[UnitName("player")] = UnitName("player");
 									end
 									return t;
 								end,

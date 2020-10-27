@@ -2664,6 +2664,7 @@ end
 -------------- AutoAward --------------------
 function RCLootCouncil:AutoAward(index, awardTo, itemLink)
 	self:debugS("AutoAward("..tostring(index)..", "..tostring(awardTo)..")")
+	--awardTo = UnitName("raid"..awardTo)
 	if UnitName("player") == awardTo then -- just take it
 		local _, item, lootQuantity = GetLootSlotInfo(index)
 		LootSlot(index)
@@ -2695,12 +2696,14 @@ function RCLootCouncil:AutoAward(index, awardTo, itemLink)
 		return;
 	end
 	for i = 1, GetNumGroupMembers() do
-		if GetMasterLootCandidate(index, i) == awardTo then
+		if GetMasterLootCandidate(i) == awardTo then
 			local _, item, lootQuantity = GetLootSlotInfo(index)
-			if lootQuantity > 0 then -- be certain there's an item
+			if lootQuantity > 0 and (strfind(itemLink, "ff1eff00") or strfind(itemLink, "ff0070dd") or strfind(itemLink, "ffa335ee") or strfind(itemLink, "ffff8000")) then -- be certain there's an item
 				GiveMasterLoot(index, i); -- give the item
 				self:debug(""..awardTo.." was Auto Awarded with "..item);
 				self:Print(itemLink.." was Auto Awarded to "..awardTo..", Reason: "..db.otherAwardReasons[db.autoAwardReason].text)
+			elseif strfind(itemLink, "ff9d9d9d") or strfind(itemLink, "ffffffff") then
+				return;
 			else
 				self:Print("Couldn't award the loot since there was no item!")
 				return;
