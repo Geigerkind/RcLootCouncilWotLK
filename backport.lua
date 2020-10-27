@@ -37,3 +37,11 @@ end
 function Ambiguate(name, other) 
 	return name
 end
+
+function UnitIsGroupLeader()
+	return IsRaidLeader()
+end
+
+function UnitIsGroupAssistant()
+	return IsRaidOfficer()
+end

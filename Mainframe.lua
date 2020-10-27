@@ -1534,7 +1534,7 @@ function RCLootCouncil_Mainframe.award(reason)
 		return;
 	else -- if there are
 		for i = 1, GetNumGroupMembers() do
-			if GetMasterLootCandidate(itemsToLootIndex[lootNum], i) == selection[1] then
+			if GetMasterLootCandidate(i) == selection[1] then
 				if #itemsToLootIndex > 0 and lootNum > 0 then -- if there really is something to loot
 					local _, _, lootQuantity = GetLootSlotInfo(itemsToLootIndex[lootNum])
 					if lootQuantity > 0 then -- be certain there's an item
